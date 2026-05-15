@@ -1,0 +1,1169 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Florece — Tu camino de 7 semanas</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;0,9..144,800;1,9..144,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --rose: #E8847A;
+  --rose2: #D4645A;
+  --peach: #F2A98A;
+  --cream: #FDF6EE;
+  --warm: #F7EDE2;
+  --bark: #3D2B1F;
+  --bark2: #5C4033;
+  --muted: #9B8070;
+  --gold: #D4A843;
+  --green: #6B9E78;
+  --green2: #4A7A58;
+  --lavender: #9B8EC4;
+  --sky: #7EB5C8;
+  --font: 'Fraunces', Georgia, serif;
+  --body: 'DM Sans', sans-serif;
+}
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+html, body { width:100%; min-height:100vh; font-family:var(--body); background:var(--cream); overflow-x:hidden; }
+#app { width:100%; max-width:430px; margin:0 auto; min-height:100vh; position:relative; background:var(--cream); }
+
+.screen { display:none; }
+.screen.active { display:block; }
+
+/* ── SPLASH / SETUP ── */
+#screen-setup {
+  min-height:100vh;
+  background:linear-gradient(160deg, #2D1A12 0%, #4A2E20 40%, #6B3D2A 70%, #8B5E4A 100%);
+  display:flex; flex-direction:column; align-items:center; justify-content:flex-end;
+  position:relative; overflow:hidden;
+}
+.setup-bg {
+  position:absolute; inset:0;
+  background:
+    radial-gradient(ellipse 60% 50% at 30% 20%, rgba(232,132,122,0.18), transparent),
+    radial-gradient(ellipse 40% 40% at 80% 60%, rgba(107,158,120,0.12), transparent);
+}
+.setup-petals {
+  position:absolute; inset:0; pointer-events:none;
+}
+.petal {
+  position:absolute; border-radius:50% 0 50% 0;
+  animation:petalFloat linear infinite;
+  opacity:0.15;
+}
+@keyframes petalFloat {
+  0% { transform:translateY(-20px) rotate(0deg); opacity:0; }
+  10% { opacity:0.2; }
+  90% { opacity:0.15; }
+  100% { transform:translateY(110vh) rotate(720deg); opacity:0; }
+}
+.setup-hero { position:relative; z-index:1; text-align:center; padding:60px 24px 0; flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+.setup-flower { font-size:5rem; margin-bottom:20px; animation:flowerSpin 6s ease-in-out infinite; display:block; }
+@keyframes flowerSpin { 0%,100%{transform:rotate(-5deg) scale(1)} 50%{transform:rotate(5deg) scale(1.05)} }
+.setup-title { font-family:var(--font); font-size:2.8rem; font-weight:800; color:white; line-height:1.05; margin-bottom:12px; letter-spacing:-1px; }
+.setup-title em { color:var(--peach); font-style:italic; font-weight:300; }
+.setup-sub { font-size:.9rem; color:rgba(255,255,255,0.6); line-height:1.7; max-width:270px; font-weight:300; }
+
+.setup-card {
+  position:relative; z-index:1;
+  background:var(--cream); border-radius:32px 32px 0 0;
+  padding:28px 22px 52px; width:100%;
+  box-shadow:0 -8px 40px rgba(0,0,0,0.3);
+}
+.setup-step { display:none; }
+.setup-step.on { display:block; animation:slideUp .4s cubic-bezier(.16,1,.3,1); }
+@keyframes slideUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+.setup-dots { display:flex; gap:6px; justify-content:center; margin-bottom:20px; }
+.s-dot { width:6px; height:6px; border-radius:3px; background:rgba(61,43,31,0.12); transition:all .3s; }
+.s-dot.on { width:22px; background:var(--rose); }
+.setup-label { font-family:var(--font); font-size:1.2rem; font-weight:700; color:var(--bark); margin-bottom:6px; }
+.setup-hint { font-size:.82rem; color:var(--muted); margin-bottom:18px; line-height:1.55; font-weight:300; }
+.setup-inp {
+  width:100%; padding:16px; border-radius:16px;
+  border:2px solid rgba(61,43,31,0.1);
+  font-family:var(--font); font-size:1.1rem; font-weight:700; color:var(--bark);
+  background:white; outline:none; margin-bottom:14px; transition:border-color .2s;
+}
+.setup-inp:focus { border-color:var(--rose); }
+.setup-inp::placeholder { color:rgba(61,43,31,0.25); font-weight:300; }
+.setup-opts { display:flex; flex-direction:column; gap:9px; margin-bottom:18px; }
+.setup-opt {
+  display:flex; align-items:center; gap:13px;
+  padding:14px 15px; background:white;
+  border-radius:16px; border:2px solid rgba(61,43,31,0.08);
+  cursor:pointer; transition:all .2s;
+}
+.setup-opt.sel { background:rgba(232,132,122,0.06); border-color:rgba(232,132,122,0.5); }
+.setup-opt-ico { font-size:1.8rem; flex-shrink:0; }
+.setup-opt-name { font-family:var(--font); font-size:.9rem; font-weight:700; color:var(--bark); display:block; }
+.setup-opt-sub { font-size:.72rem; color:var(--muted); font-weight:300; }
+.setup-opt-ck { margin-left:auto; width:22px; height:22px; border-radius:50%; border:2px solid rgba(61,43,31,0.12); display:flex; align-items:center; justify-content:center; font-size:.7rem; transition:all .2s; flex-shrink:0; }
+.setup-opt.sel .setup-opt-ck { background:var(--rose); border-color:var(--rose); color:white; font-weight:900; }
+.btn-primary {
+  width:100%; padding:16px; border-radius:16px; border:none;
+  font-family:var(--font); font-size:1rem; font-weight:700;
+  cursor:pointer; background:var(--bark); color:white;
+  transition:all .18s; letter-spacing:0.2px;
+}
+.btn-primary:active { transform:translateY(2px); }
+.btn-primary:disabled { background:rgba(61,43,31,0.15); color:rgba(61,43,31,0.3); cursor:not-allowed; }
+.btn-rose { background:var(--rose); box-shadow:0 4px 20px rgba(232,132,122,0.35); }
+.btn-rose:hover { background:var(--rose2); }
+
+/* ── HOME / DASHBOARD ── */
+#screen-home { min-height:100vh; padding-bottom:80px; }
+.home-header {
+  background:linear-gradient(160deg, #3D2B1F, #6B3D2A);
+  padding:48px 20px 32px; position:relative; overflow:hidden;
+}
+.home-header::before {
+  content:''; position:absolute; inset:0;
+  background:radial-gradient(ellipse 70% 80% at 20% 50%, rgba(232,132,122,0.15), transparent);
+}
+.home-top { display:flex; justify-content:space-between; align-items:flex-start; position:relative; z-index:1; margin-bottom:20px; }
+.home-brand { font-family:var(--font); font-size:1.1rem; font-weight:700; color:rgba(255,255,255,0.6); }
+.week-badge { background:rgba(255,255,255,0.12); border:1px solid rgba(255,255,255,0.18); border-radius:20px; padding:5px 14px; font-size:.75rem; font-weight:600; color:white; }
+.home-greeting { position:relative; z-index:1; }
+.home-time-tag { font-size:.75rem; font-weight:600; color:rgba(255,255,255,0.55); margin-bottom:4px; letter-spacing:.05em; text-transform:uppercase; }
+.home-name { font-family:var(--font); font-size:2rem; font-weight:800; color:white; line-height:1.1; margin-bottom:8px; }
+.home-name span { color:var(--peach); font-style:italic; font-weight:300; }
+.home-tagline { font-size:.83rem; color:rgba(255,255,255,0.55); font-weight:300; line-height:1.55; }
+
+/* Progress ring */
+.progress-section { padding:20px; display:flex; gap:14px; align-items:center; background:white; margin:0 16px; border-radius:20px; box-shadow:0 4px 24px rgba(61,43,31,0.08); margin-top:-20px; position:relative; z-index:2; }
+.ring-wrap { flex-shrink:0; position:relative; width:72px; height:72px; }
+.ring-svg { transform:rotate(-90deg); }
+.ring-bg { fill:none; stroke:rgba(61,43,31,0.06); stroke-width:6; }
+.ring-fill { fill:none; stroke-width:6; stroke-linecap:round; transition:stroke-dashoffset .8s ease; }
+.ring-label { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+.ring-pct { font-family:var(--font); font-size:.95rem; font-weight:800; color:var(--bark); line-height:1; }
+.ring-sub { font-size:.55rem; color:var(--muted); font-weight:600; letter-spacing:.04em; text-transform:uppercase; margin-top:2px; }
+.progress-info { flex:1; }
+.prog-title { font-family:var(--font); font-size:.95rem; font-weight:700; color:var(--bark); margin-bottom:3px; }
+.prog-sub { font-size:.75rem; color:var(--muted); font-weight:300; line-height:1.5; }
+.prog-weeks { display:flex; gap:5px; margin-top:8px; }
+.prog-week { width:28px; height:6px; border-radius:3px; background:rgba(61,43,31,0.08); transition:all .3s; }
+.prog-week.done { background:var(--rose); }
+.prog-week.active { background:var(--peach); }
+
+/* Today's tasks */
+.section-header { padding:20px 20px 12px; display:flex; justify-content:space-between; align-items:baseline; }
+.section-title { font-family:var(--font); font-size:1.1rem; font-weight:700; color:var(--bark); }
+.section-hint { font-size:.72rem; color:var(--muted); font-weight:300; }
+.tasks-grid { padding:0 16px; display:flex; flex-direction:column; gap:10px; }
+.task-card {
+  background:white; border-radius:20px;
+  border:1.5px solid rgba(61,43,31,0.06);
+  padding:16px; cursor:pointer; transition:all .2s;
+  display:flex; align-items:flex-start; gap:13px;
+}
+.task-card:active { transform:scale(.98); }
+.task-card.completed { background:rgba(107,158,120,0.05); border-color:rgba(107,158,120,0.2); }
+.task-card.locked { opacity:.5; cursor:default; }
+.task-time-icon { width:44px; height:44px; border-radius:14px; display:flex; align-items:center; justify-content:center; font-size:1.4rem; flex-shrink:0; }
+.task-body { flex:1; min-width:0; }
+.task-time-label { font-size:.62rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase; margin-bottom:3px; }
+.task-title { font-family:var(--font); font-size:.92rem; font-weight:700; color:var(--bark); line-height:1.3; margin-bottom:3px; }
+.task-desc { font-size:.74rem; color:var(--muted); font-weight:300; line-height:1.5; }
+.task-status { flex-shrink:0; width:26px; height:26px; border-radius:50%; border:2px solid rgba(61,43,31,0.1); display:flex; align-items:center; justify-content:center; transition:all .3s; }
+.task-card.completed .task-status { background:var(--green); border-color:var(--green); color:white; font-size:.75rem; }
+
+/* Module map */
+.mod-map { padding:0 16px 16px; display:flex; flex-direction:column; gap:8px; }
+.mod-item {
+  background:white; border-radius:18px;
+  border:1.5px solid rgba(61,43,31,0.06);
+  padding:14px 15px; display:flex; align-items:center; gap:13px;
+  cursor:pointer; transition:all .2s;
+}
+.mod-item:active { transform:scale(.98); }
+.mod-item.active-mod { border-color:rgba(232,132,122,0.4); background:rgba(232,132,122,0.03); }
+.mod-item.done { border-color:rgba(107,158,120,0.3); background:rgba(107,158,120,0.03); }
+.mod-item.locked { opacity:.45; cursor:default; }
+.mod-num { width:36px; height:36px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-family:var(--font); font-size:.85rem; font-weight:800; flex-shrink:0; }
+.mod-content { flex:1; }
+.mod-name { font-family:var(--font); font-size:.88rem; font-weight:700; color:var(--bark); margin-bottom:2px; }
+.mod-status-row { font-size:.7rem; color:var(--muted); font-weight:300; display:flex; align-items:center; gap:6px; }
+.mod-days-row { display:flex; gap:3px; margin-top:5px; }
+.mod-day-dot { width:8px; height:8px; border-radius:50%; background:rgba(61,43,31,0.08); transition:all .3s; }
+.mod-day-dot.done { background:var(--rose); }
+.mod-day-dot.today { background:var(--peach); box-shadow:0 0 0 2px rgba(232,132,122,0.3); }
+.mod-arrow { font-size:.85rem; color:rgba(61,43,31,0.2); flex-shrink:0; }
+
+/* ── NOTIFICATION SIMULATOR ── */
+.notif-overlay {
+  position:fixed; inset:0; max-width:430px; left:50%; transform:translateX(-50%);
+  z-index:600; pointer-events:none;
+  display:flex; flex-direction:column; justify-content:flex-start;
+  padding:52px 14px 0;
+}
+.notif-card {
+  background:rgba(255,255,255,0.96);
+  border-radius:18px; padding:14px 16px;
+  box-shadow:0 8px 32px rgba(61,43,31,0.18);
+  backdrop-filter:blur(12px);
+  display:flex; gap:12px; align-items:flex-start;
+  transform:translateY(-120%); opacity:0;
+  transition:all .5s cubic-bezier(.16,1,.3,1);
+  pointer-events:auto; cursor:pointer;
+  border:1px solid rgba(61,43,31,0.06);
+}
+.notif-card.show { transform:translateY(0); opacity:1; }
+.notif-app-icon { width:42px; height:42px; border-radius:12px; background:linear-gradient(135deg,var(--rose),var(--bark2)); display:flex; align-items:center; justify-content:center; font-size:1.3rem; flex-shrink:0; }
+.notif-body { flex:1; }
+.notif-app { font-size:.65rem; font-weight:700; color:var(--muted); letter-spacing:.05em; text-transform:uppercase; margin-bottom:2px; }
+.notif-title { font-family:var(--font); font-size:.9rem; font-weight:700; color:var(--bark); margin-bottom:2px; line-height:1.3; }
+.notif-msg { font-size:.75rem; color:var(--muted); font-weight:300; line-height:1.45; }
+.notif-time { font-size:.62rem; color:var(--muted); flex-shrink:0; margin-top:2px; }
+
+/* ── MODULE DETAIL SCREEN ── */
+#screen-module { min-height:100vh; background:var(--cream); padding-bottom:30px; }
+.mod-header {
+  background:linear-gradient(160deg, #3D2B1F, #6B3D2A);
+  padding:52px 20px 28px; position:relative; overflow:hidden;
+}
+.mod-header::after { content:''; position:absolute; inset:0; background:radial-gradient(ellipse 60% 70% at 80% 30%, rgba(232,132,122,0.15), transparent); pointer-events:none; }
+.mod-back { position:absolute; top:16px; left:16px; width:38px; height:38px; border-radius:12px; background:rgba(255,255,255,0.12); border:none; color:white; font-size:1rem; cursor:pointer; display:flex; align-items:center; justify-content:center; z-index:2; }
+.mod-header-content { position:relative; z-index:1; }
+.mod-week-tag { font-size:.68rem; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:rgba(255,255,255,0.55); margin-bottom:8px; }
+.mod-header-title { font-family:var(--font); font-size:1.8rem; font-weight:800; color:white; line-height:1.1; margin-bottom:8px; }
+.mod-header-sub { font-size:.82rem; color:rgba(255,255,255,0.55); font-weight:300; line-height:1.6; }
+.mod-progress-row { display:flex; gap:5px; margin-top:14px; }
+.mod-p-dot { flex:1; height:5px; border-radius:3px; background:rgba(255,255,255,0.15); transition:all .3s; }
+.mod-p-dot.done { background:var(--peach); }
+.mod-p-dot.active { background:rgba(255,255,255,0.6); }
+
+.day-cards { padding:18px 16px; display:flex; flex-direction:column; gap:10px; }
+.day-section { font-family:var(--font); font-size:.78rem; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:.08em; padding:8px 0 6px; }
+.day-task-card {
+  background:white; border-radius:18px;
+  border:1.5px solid rgba(61,43,31,0.06);
+  padding:16px; cursor:pointer; transition:all .22s;
+}
+.day-task-card:active { transform:scale(.98); }
+.day-task-card.done { background:rgba(107,158,120,0.05); border-color:rgba(107,158,120,0.25); }
+.day-task-card.locked { opacity:.4; cursor:default; }
+.dtc-top { display:flex; align-items:flex-start; gap:12px; margin-bottom:8px; }
+.dtc-icon { width:40px; height:40px; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:1.3rem; flex-shrink:0; }
+.dtc-info { flex:1; }
+.dtc-label { font-size:.62rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase; margin-bottom:2px; }
+.dtc-title { font-family:var(--font); font-size:.92rem; font-weight:700; color:var(--bark); line-height:1.3; }
+.dtc-check { width:26px; height:26px; border-radius:50%; border:2px solid rgba(61,43,31,0.1); display:flex; align-items:center; justify-content:center; flex-shrink:0; transition:all .25s; }
+.day-task-card.done .dtc-check { background:var(--green); border-color:var(--green); color:white; font-size:.75rem; }
+.dtc-desc { font-size:.78rem; color:var(--muted); font-weight:300; line-height:1.6; }
+.dtc-reflection { margin-top:10px; display:none; }
+.day-task-card.open .dtc-reflection { display:block; }
+.dtc-textarea {
+  width:100%; min-height:90px; border:1.5px solid rgba(61,43,31,0.1);
+  border-radius:12px; padding:12px; font-family:var(--body); font-size:.83rem;
+  color:var(--bark); resize:none; outline:none; background:var(--warm);
+  line-height:1.6; margin-top:8px;
+}
+.dtc-textarea:focus { border-color:var(--rose); }
+.dtc-confirm { width:100%; margin-top:10px; padding:12px; border-radius:12px; border:none; font-family:var(--font); font-size:.85rem; font-weight:700; cursor:pointer; background:var(--bark); color:white; transition:all .15s; }
+.dtc-confirm:active { transform:translateY(1px); }
+
+/* Affirmation card */
+.affirm-card {
+  margin:0 16px 10px;
+  background:linear-gradient(135deg, rgba(232,132,122,0.08), rgba(212,168,67,0.06));
+  border:1.5px solid rgba(232,132,122,0.18);
+  border-radius:20px; padding:18px 18px;
+}
+.affirm-label { font-size:.62rem; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--rose); margin-bottom:7px; }
+.affirm-text { font-family:var(--font); font-size:1rem; font-weight:700; color:var(--bark); line-height:1.5; font-style:italic; }
+
+/* Streak / stats row */
+.stats-strip { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; padding:0 16px 16px; }
+.strip-card { background:white; border-radius:16px; border:1.5px solid rgba(61,43,31,0.06); padding:13px 10px; text-align:center; }
+.strip-val { font-family:var(--font); font-size:1.4rem; font-weight:800; line-height:1; margin-bottom:3px; }
+.strip-lbl { font-size:.6rem; color:var(--muted); text-transform:uppercase; letter-spacing:.06em; font-weight:600; }
+
+/* ── TASK COMPLETE ANIMATION ── */
+.confetti-burst { position:fixed; pointer-events:none; z-index:700; }
+.cb-dot { position:absolute; border-radius:50%; animation:cbAnim .9s ease-out forwards; }
+@keyframes cbAnim { 0%{transform:translate(0,0) scale(1);opacity:1} 100%{transform:translate(var(--tx),var(--ty)) scale(0);opacity:0} }
+
+/* Toast */
+.toast-bar {
+  position:fixed; bottom:90px; left:50%;
+  transform:translateX(-50%) translateY(20px);
+  background:var(--bark); color:white;
+  border-radius:30px; padding:12px 22px;
+  font-family:var(--font); font-size:.85rem; font-weight:700;
+  opacity:0; transition:all .4s cubic-bezier(.16,1,.3,1);
+  z-index:500; white-space:nowrap;
+  box-shadow:0 4px 20px rgba(61,43,31,0.3);
+  display:flex; align-items:center; gap:8px;
+}
+.toast-bar.show { opacity:1; transform:translateX(-50%) translateY(0); }
+
+/* Bottom nav */
+.bnav {
+  position:fixed; bottom:0; left:50%; transform:translateX(-50%);
+  width:100%; max-width:430px; background:white;
+  border-top:1.5px solid rgba(61,43,31,0.06);
+  display:flex; z-index:100;
+}
+.nb { flex:1; padding:9px 4px 11px; text-align:center; border:none; background:transparent; cursor:pointer; }
+.nb-ic { font-size:1.2rem; display:block; transition:transform .18s; }
+.nb-lb { font-size:.58rem; font-family:var(--body); font-weight:600; color:rgba(61,43,31,0.3); margin-top:2px; display:block; letter-spacing:.03em; }
+.nb.on .nb-lb { color:var(--rose); }
+.nb.on .nb-ic { transform:scale(1.12); }
+
+/* ── ANIMATIONS ── */
+.fade-in { animation:fadeIn .5s ease forwards; }
+@keyframes fadeIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+
+/* Celebration full screen */
+.celebration {
+  position:fixed; inset:0; max-width:430px; left:50%; transform:translateX(-50%);
+  background:linear-gradient(160deg, #3D2B1F, #6B3D2A);
+  z-index:800; display:none; flex-direction:column;
+  align-items:center; justify-content:center; padding:32px;
+  text-align:center;
+}
+.celebration.open { display:flex; }
+.cel-flower { font-size:5rem; margin-bottom:20px; animation:celPulse 1.5s ease-in-out infinite; }
+@keyframes celPulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.08)} }
+.cel-title { font-family:var(--font); font-size:2rem; font-weight:800; color:white; margin-bottom:10px; line-height:1.2; }
+.cel-title em { color:var(--peach); font-style:italic; font-weight:300; }
+.cel-sub { font-size:.88rem; color:rgba(255,255,255,0.65); font-weight:300; line-height:1.7; margin-bottom:32px; max-width:280px; }
+.cel-rewards { display:flex; gap:12px; margin-bottom:32px; }
+.cel-rew { background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.18); border-radius:16px; padding:14px 18px; }
+.cel-rv { font-family:var(--font); font-size:1.3rem; font-weight:800; color:var(--peach); display:block; }
+.cel-rl { font-size:.65rem; color:rgba(255,255,255,0.5); margin-top:3px; font-weight:600; }
+</style>
+</head>
+<body>
+<div id="app">
+
+<!-- SETUP -->
+<div id="screen-setup" class="screen active">
+  <div class="setup-bg"></div>
+  <div class="setup-petals" id="petals-container"></div>
+  <div class="setup-hero">
+    <span class="setup-flower">🌸</span>
+    <div class="setup-title">Tú <em>puedes</em><br>florecer</div>
+    <div class="setup-sub">Un camino de 7 semanas diseñado especialmente para vos</div>
+  </div>
+  <div class="setup-card">
+    <div class="setup-dots">
+      <div class="s-dot on" id="sd1"></div>
+      <div class="s-dot" id="sd2"></div>
+      <div class="s-dot" id="sd3"></div>
+    </div>
+    <!-- Step 1 -->
+    <div class="setup-step on" id="ss1">
+      <div class="setup-label">¿Cómo te llamás?</div>
+      <div class="setup-hint">Esta app fue creada para acompañarte, no para juzgarte. Todo lo que escribas es solo tuyo.</div>
+      <input class="setup-inp" id="name-inp" type="text" placeholder="Tu nombre..." maxlength="25">
+      <button class="btn-primary btn-rose" id="ss1-btn" disabled onclick="setupNext(2)">Seguir →</button>
+    </div>
+    <!-- Step 2 -->
+    <div class="setup-step" id="ss2">
+      <div class="setup-label">¿Cómo te sentís últimamente?</div>
+      <div class="setup-hint">No hay respuesta incorrecta. Esto me ayuda a acompañarte mejor.</div>
+      <div class="setup-opts" id="feeling-opts">
+        <div class="setup-opt" onclick="selectFeeling('stuck',this)">
+          <span class="setup-opt-ico">🌧️</span>
+          <div><span class="setup-opt-name">Estancada, sin energía</span><span class="setup-opt-sub">Siento que no avanzo</span></div>
+          <div class="setup-opt-ck"></div>
+        </div>
+        <div class="setup-opt" onclick="selectFeeling('doubt',this)">
+          <span class="setup-opt-ico">🌫️</span>
+          <div><span class="setup-opt-name">Dudo mucho de mí misma</span><span class="setup-opt-sub">No creo que pueda lograrlo</span></div>
+          <div class="setup-opt-ck"></div>
+        </div>
+        <div class="setup-opt" onclick="selectFeeling('ready',this)">
+          <span class="setup-opt-ico">🌱</span>
+          <div><span class="setup-opt-name">Lista para cambiar algo</span><span class="setup-opt-sub">Solo necesito un empujón</span></div>
+          <div class="setup-opt-ck"></div>
+        </div>
+      </div>
+      <button class="btn-primary btn-rose" id="ss2-btn" disabled onclick="setupNext(3)">Continuar →</button>
+    </div>
+    <!-- Step 3 -->
+    <div class="setup-step" id="ss3">
+      <div class="setup-label">¿A qué hora querés tus recordatorios?</div>
+      <div class="setup-hint">La app te mandará tareas en 3 momentos del día. Podés cambiarlos después.</div>
+      <div class="setup-opts">
+        <div class="setup-opt sel" id="time-opt-1" onclick="selectTime(1,this)">
+          <span class="setup-opt-ico">🌅</span>
+          <div><span class="setup-opt-name">Mañana: 8:00 AM</span><span class="setup-opt-sub">Tarea de intención del día</span></div>
+          <div class="setup-opt-ck">✓</div>
+        </div>
+        <div class="setup-opt sel" id="time-opt-2" onclick="selectTime(2,this)">
+          <span class="setup-opt-ico">☀️</span>
+          <div><span class="setup-opt-name">Mediodía: 12:30 PM</span><span class="setup-opt-sub">Reto de acción del día</span></div>
+          <div class="setup-opt-ck">✓</div>
+        </div>
+        <div class="setup-opt sel" id="time-opt-3" onclick="selectTime(3,this)">
+          <span class="setup-opt-ico">🌙</span>
+          <div><span class="setup-opt-name">Noche: 8:00 PM</span><span class="setup-opt-sub">Reflexión del día</span></div>
+          <div class="setup-opt-ck">✓</div>
+        </div>
+      </div>
+      <button class="btn-primary btn-rose" onclick="finishSetup()">¡Empezar mi camino! 🌸</button>
+    </div>
+  </div>
+</div>
+
+<!-- HOME -->
+<div id="screen-home" class="screen">
+  <div class="home-header">
+    <div class="home-top">
+      <div class="home-brand">🌸 Florece</div>
+      <div class="week-badge" id="week-badge">Semana 1</div>
+    </div>
+    <div class="home-greeting">
+      <div class="home-time-tag" id="time-tag">Buenos días</div>
+      <div class="home-name"><span id="home-username">Sofía</span>, hoy<br>es un buen día</div>
+      <div class="home-tagline" id="home-tagline">Tenés 3 tareas esperándote 🌱</div>
+    </div>
+  </div>
+
+  <!-- Progress -->
+  <div class="progress-section">
+    <div class="ring-wrap">
+      <svg class="ring-svg" width="72" height="72" viewBox="0 0 72 72">
+        <circle class="ring-bg" cx="36" cy="36" r="30"/>
+        <circle class="ring-fill" id="ring-fill" cx="36" cy="36" r="30" stroke="var(--rose)" stroke-dasharray="188.5" stroke-dashoffset="188.5"/>
+      </svg>
+      <div class="ring-label">
+        <span class="ring-pct" id="ring-pct">0%</span>
+        <span class="ring-sub">total</span>
+      </div>
+    </div>
+    <div class="progress-info">
+      <div class="prog-title" id="prog-title">Módulo 1: Mentalidad</div>
+      <div class="prog-sub" id="prog-sub">Día 1 de 7 · 0 de 3 tareas hoy</div>
+      <div class="prog-weeks" id="prog-weeks"></div>
+    </div>
+  </div>
+
+  <!-- Affirmation -->
+  <div style="height:14px"></div>
+  <div class="affirm-card fade-in" id="affirm-card">
+    <div class="affirm-label">💫 Tu afirmación de hoy</div>
+    <div class="affirm-text" id="affirm-text">"Soy capaz de más de lo que me permito creer."</div>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats-strip">
+    <div class="strip-card"><div class="strip-val" style="color:var(--rose)" id="stat-streak">0</div><div class="strip-lbl">🔥 Racha</div></div>
+    <div class="strip-card"><div class="strip-val" style="color:var(--green)" id="stat-done">0</div><div class="strip-lbl">✅ Tareas</div></div>
+    <div class="strip-card"><div class="strip-val" style="color:var(--gold)" id="stat-week">1</div><div class="strip-lbl">📅 Semana</div></div>
+  </div>
+
+  <!-- Today tasks -->
+  <div class="section-header">
+    <div class="section-title">Tus tareas de hoy</div>
+    <div class="section-hint" id="tasks-hint">Toca para ver el reto</div>
+  </div>
+  <div class="tasks-grid" id="tasks-grid"></div>
+
+  <!-- Module map -->
+  <div class="section-header" style="margin-top:8px">
+    <div class="section-title">Tus 7 semanas</div>
+  </div>
+  <div class="mod-map" id="mod-map"></div>
+
+  <div class="bnav">
+    <button class="nb on" onclick="showScreen('home',this)"><span class="nb-ic">🏠</span><span class="nb-lb">Inicio</span></button>
+    <button class="nb" onclick="showScreen('module',this);renderModuleView(STATE.currentMod)"><span class="nb-ic">📖</span><span class="nb-lb">Módulo</span></button>
+    <button class="nb" onclick="showNotifDemo()"><span class="nb-ic">🔔</span><span class="nb-lb">Recordar</span></button>
+    <button class="nb" onclick="showStats()"><span class="nb-ic">🌸</span><span class="nb-lb">Mi avance</span></button>
+  </div>
+</div>
+
+<!-- MODULE DETAIL -->
+<div id="screen-module" class="screen">
+  <div class="mod-header" id="mod-header">
+    <button class="mod-back" onclick="showScreen('home',null);renderHome()">←</button>
+    <div class="mod-header-content">
+      <div class="mod-week-tag" id="mh-tag">SEMANA 1 · 7 DÍAS</div>
+      <div class="mod-header-title" id="mh-title">Mentalidad</div>
+      <div class="mod-header-sub" id="mh-sub">Reprogramar cómo te hablás a vos misma</div>
+      <div class="mod-progress-row" id="mh-progress"></div>
+    </div>
+  </div>
+  <div class="day-cards" id="day-cards"></div>
+</div>
+
+<!-- NOTIFICATION OVERLAY -->
+<div class="notif-overlay" id="notif-overlay">
+  <div class="notif-card" id="notif-card" onclick="dismissNotif()">
+    <div class="notif-app-icon">🌸</div>
+    <div class="notif-body">
+      <div class="notif-app">Florece</div>
+      <div class="notif-title" id="notif-title">Tu tarea de la mañana te espera</div>
+      <div class="notif-msg" id="notif-msg">Tomá 2 minutos para conectarte con vos misma</div>
+    </div>
+    <div class="notif-time" id="notif-time">ahora</div>
+  </div>
+</div>
+
+<!-- CELEBRATION -->
+<div class="celebration" id="celebration">
+  <span class="cel-flower">🌺</span>
+  <div class="cel-title">¡Lo <em>lograste!</em></div>
+  <div class="cel-sub" id="cel-sub">Completaste el módulo. Cada semana que pasás siendo fiel a vos misma te lleva más cerca de quien querés ser.</div>
+  <div class="cel-rewards">
+    <div class="cel-rew"><span class="cel-rv" id="cel-weeks">1</span><span class="cel-rl">semana</span></div>
+    <div class="cel-rew"><span class="cel-rv" id="cel-tasks">21</span><span class="cel-rl">tareas</span></div>
+  </div>
+  <button class="btn-primary btn-rose" style="max-width:280px" onclick="closeCelebration()">Seguir floreciendo 🌸</button>
+</div>
+
+<!-- TOAST -->
+<div class="toast-bar" id="toast-bar">
+  <span id="toast-ic">🌸</span>
+  <span id="toast-msg">¡Bien!</span>
+</div>
+
+</div><!-- /app -->
+
+<script>
+// ── DATA ────────────────────────────────────────────────────
+var MODULES = [
+  {
+    id:1, emoji:'🧠', color:'var(--rose)', bgColor:'rgba(232,132,122,0.12)',
+    name:'Mentalidad', fullName:'Mentalidad: Sí puedo',
+    sub:'Reprogramar cómo te hablás a vos misma',
+    desc:'Esta semana vas a desafiar cada pensamiento que te dice que no podés. Porque sí podés.',
+    affirms:[
+      '"Soy capaz de más de lo que me permito creer."',
+      '"Cada pequeño paso cuenta. Cada uno."',
+      '"No necesito ser perfecta para merecer avanzar."',
+      '"Mi mente es mi aliada, no mi enemiga."',
+      '"Estoy aprendiendo. Y eso ya es suficiente."',
+      '"Me merezco intentarlo."',
+      '"Hoy soy un poco más valiente que ayer."'
+    ],
+    days:[
+      {
+        morning:{icon:'🌅',label:'Mañana',title:'El pensamiento de hoy',desc:'Antes de levantarte del todo, pensá: ¿qué pensamiento negativo te visita seguido? Solo observalo, sin juzgarlo.',type:'reflect',prompt:'¿Cuál es ese pensamiento que más te repite que no podés? Escribilo.'},
+        noon:{icon:'☀️',label:'Mediodía',title:'Reescribilo',desc:'Tomá ese pensamiento negativo y escribí su opuesto realista. No tiene que ser perfecto.',type:'task',checks:['Escribí el pensamiento negativo','Escribí su opuesto realista','Repetilo en voz alta 3 veces']},
+        night:{icon:'🌙',label:'Noche',title:'¿Cómo lo viviste?',desc:'Reflexioná sobre cómo te sentiste al desafiar ese pensamiento.',type:'reflect',prompt:'¿Qué pasó cuando intentaste cambiar el pensamiento? ¿Fue difícil? ¿Notaste algo?'}
+      },
+      {
+        morning:{icon:'🌅',label:'Mañana',title:'Tu voz interna',desc:'Hoy prestás atención a cómo te hablás. ¿Te hablarías así a una amiga?',type:'reflect',prompt:'Escribí 3 cosas que te decís a vos misma que no le dirías a alguien que querés.'},
+        noon:{icon:'☀️',label:'Mediodía',title:'Sé tu propia amiga',desc:'Cambiá esas 3 frases por lo que le dirías a tu mejor amiga.',type:'task',checks:['Releí tus 3 frases del morning','Reescribí cada una con amabilidad','Guardala en tu teléfono']},
+        night:{icon:'🌙',label:'Noche',title:'Reflexión: el lenguaje cambia todo',desc:'Notaste la diferencia entre las dos versiones?',type:'reflect',prompt:'¿Cómo te sentiste con la versión amable? ¿Te resultó raro o natural?'}
+      },
+      {
+        morning:{icon:'🌅',label:'Mañana',title:'Lo que sí pudiste',desc:'Muchas veces nos enfocamos en lo que no logramos. Hoy, lo opuesto.',type:'reflect',prompt:'Nombrá 3 cosas que lograste esta semana, aunque sean pequeñas. Nada es demasiado chico.'},
+        noon:{icon:'☀️',label:'Mediodía',title:'El reto de hoy: decir "sí puedo"',desc:'Elegí una cosa que has estado postergando por creer que no podés y dá un primer paso, aunque sea mínimo.',type:'task',checks:['Identificá esa cosa que postergás','Dá UN paso pequeño (5 minutos es suficiente)','Escribí cómo te sentiste después']},
+        night:{icon:'🌙',label:'Noche',title:'El poder de empezar',desc:'¿Cómo estuvo ese primer paso?',type:'reflect',prompt:'¿Qué pasó cuando diste el paso? ¿Era tan difícil como pensabas?'}
+      },
+      {
+        morning:{icon:'🌅',label:'Mañana',title:'Tus fortalezas',desc:'Hoy vas a reconocer lo que tenés, no lo que te falta.',type:'reflect',prompt:'Escribí 5 cosas en las que sos buena. Puede ser cualquier cosa: cocinar, escuchar, ser detallista…'},
+        noon:{icon:'☀️',label:'Mediodía',title:'Usá una fortaleza hoy',desc:'Elegí una de tus fortalezas y buscá una forma de usarla hoy, aunque sea en algo pequeño.',type:'task',checks:['Elegí 1 fortaleza de tu lista','Encontrá cómo usarla hoy','Notá cómo te sentiste al usarla']},
+        night:{icon:'🌙',label:'Noche',title:'Reflexión: tus dones',desc:'Reconocer lo que tenemos es el primer paso para usarlo.',type:'reflect',prompt:'¿Cuál de tus fortalezas creés que estás desaprovechando más? ¿Por qué?'}
+      },
+      {
+        morning:{icon:'🌅',label:'Mañana',title:'El miedo que te frena',desc:'Hoy miramos de frente al miedo que más te paraliza.',type:'reflect',prompt:'¿Qué es lo que más miedo te da intentar? Escribilo sin censurarte.'},
+        noon:{icon:'☀️',label:'Mediodía',title:'¿Qué pasa si…?',desc:'Preguntate: ¿qué es lo peor que podría pasar si lo intentás? ¿Y qué podría ganar?',type:'task',checks:['Escribí el peor escenario posible','Escribí qué podrías ganar si funciona','Preguntate: ¿vale la pena intentarlo?']},
+        night:{icon:'🌙',label:'Noche',title:'El miedo está, pero vos también',desc:'El miedo no desaparece. Pero vos aprendés a actuar con él.',type:'reflect',prompt:'¿Cambió algo en cómo ves ese miedo después de analizarlo?'}
+      },
+      {
+        morning:{icon:'🌅',label:'Mañana',title:'Una persona que te inspira',desc:'Pensá en alguien (real o ficticio) que admires por cómo enfrenta la vida.',type:'reflect',prompt:'¿Quién es esa persona? ¿Qué tiene ella que sentís que vos no tenés?'},
+        noon:{icon:'☀️',label:'Mediodía',title:'Vos ya tenés algo de eso',desc:'Lo que admirás en otros suele ser algo que también existe en vos, esperando ser desarrollado.',type:'task',checks:['Elegí 1 cualidad de esa persona','Encontrá un momento de tu vida donde vos también lo mostraste','Escribilo']},
+        night:{icon:'🌙',label:'Noche',title:'La inspiración vive en vos',desc:'',type:'reflect',prompt:'¿Qué descubriste de vos misma hoy?'}
+      },
+      {
+        morning:{icon:'🌅',label:'Mañana',title:'Tu carta para vos misma',desc:'El último día de esta semana. Es momento de hablarle a la persona que fuiste al empezar.',type:'reflect',prompt:'Escribile una carta breve a vos misma de hace 7 días. Contale lo que aprendiste.'},
+        noon:{icon:'☀️',label:'Mediodía',title:'Celebrá lo que hiciste',desc:'Completaste una semana entera trabajando tu mentalidad. Eso es real y es tuyo.',type:'task',checks:['Relee tus reflexiones de la semana','Escribí 1 cambio que notaste en vos','Date un premio hoy, aunque sea pequeño']},
+        night:{icon:'🌙',label:'Noche',title:'Lista para la semana 2',desc:'',type:'reflect',prompt:'¿Cómo te sentís hoy comparado al día 1? ¿Qué llevás con vos?'}
+      }
+    ]
+  },
+  {
+    id:2, emoji:'🤝', color:'var(--lavender)', bgColor:'rgba(155,142,196,0.12)',
+    name:'Vínculos', fullName:'Vínculos: Con quién me rodeo',
+    sub:'Entender cómo nos afectan las personas que elegimos tener cerca',
+    desc:'Las personas que te rodean moldean tu energía y tus creencias. Esta semana, mirás eso de frente.',
+    affirms:[
+      '"Merezco vínculos que me sumen, no que me resten."',
+      '"Puedo elegir con quién comparto mi energía."',
+      '"Poner límites es un acto de amor propio."',
+      '"No necesito la aprobación de todos para valer."',
+      '"Mi círculo me influye — y yo puedo elegirlo."',
+      '"Estoy aprendiendo a reconocer lo que me hace bien."',
+      '"Me rodeo de personas que creen en mí."'
+    ],
+    days:[
+      {morning:{icon:'🌅',label:'Mañana',title:'Tu círculo actual',desc:'Pensá en las 5 personas con las que más tiempo pasás.',type:'reflect',prompt:'Nombralas. ¿Cómo te sentís después de estar con cada una?'},
+      noon:{icon:'☀️',label:'Mediodía',title:'Energía que suma vs resta',desc:'Clasificá esas personas: ¿te dan energía o te la quitan?',type:'task',checks:['Hacé la lista de las 5 personas','Anotá: +energía o -energía al lado de cada una','Notá el patrón sin juzgarte']},
+      night:{icon:'🌙',label:'Noche',title:'¿Qué te dice eso?',desc:'',type:'reflect',prompt:'¿Qué descubriste? ¿Te sorprendió algo?'}},
+      {morning:{icon:'🌅',label:'Mañana',title:'Los límites',desc:'¿Con quién te cuesta decir "no"? ¿Por qué?',type:'reflect',prompt:'Nombrá a esa persona y explicá por qué es difícil ponerle un límite.'},
+      noon:{icon:'☀️',label:'Mediodía',title:'Practicá decir no',desc:'Hoy, en una situación pequeña, practicá decir que no o redirigir algo que no querés.',type:'task',checks:['Identificá una situación del día','Di "no" o "preferiría no" aunque sea en algo chico','Notá cómo te sentiste']},
+      night:{icon:'🌙',label:'Noche',title:'El peso de los límites',desc:'',type:'reflect',prompt:'¿Cómo estuvo? ¿Sentiste culpa, alivio, o ambas cosas?'}},
+      {morning:{icon:'🌅',label:'Mañana',title:'La persona que te inspira',desc:'¿Hay alguien en tu vida que genuinamente te sube el ánimo?',type:'reflect',prompt:'¿Quién es? ¿Qué hace que te haga sentir bien?'},
+      noon:{icon:'☀️',label:'Mediodía',title:'Conectá con esa persona',desc:'Escribile o llamale hoy. No tiene que ser largo ni profundo.',type:'task',checks:['Contactá a esa persona hoy','Decile algo genuino que apreciás de ella','Notá cómo te quedás después']},
+      night:{icon:'🌙',label:'Noche',title:'Las relaciones que nutren',desc:'',type:'reflect',prompt:'¿Cómo te sentiste después de conectar con alguien que te hace bien?'}},
+      {morning:{icon:'🌅',label:'Mañana',title:'La comparación',desc:'¿Con quién te comparás más? ¿Qué sentís cuando lo hacés?',type:'reflect',prompt:'Escribilo honestamente. No hay juicio aquí.'},
+      noon:{icon:'☀️',label:'Mediodía',title:'La comparación te roba el presente',desc:'Cada vez que te comparés hoy, notalo y preguntate: ¿qué hay de bueno en mi propio camino?',type:'task',checks:['Cada vez que te comparés, poné pausa','Preguntate qué tenés vos que esa persona no','Anotá al menos 1 cosa única de tu camino']},
+      night:{icon:'🌙',label:'Noche',title:'Tu camino es tuyo',desc:'',type:'reflect',prompt:'¿Pudiste notar las comparaciones? ¿Qué aprendiste?'}},
+      {morning:{icon:'🌅',label:'Mañana',title:'Pedir ayuda',desc:'¿Te cuesta pedir ayuda? ¿Por qué creés que es así?',type:'reflect',prompt:'Escribí qué sentís cuando pensás en pedirle algo a alguien. ¿Vergüenza? ¿Miedo? ¿Por qué?'},
+      noon:{icon:'☀️',label:'Mediodía',title:'Pedí algo hoy',desc:'Pedile algo a alguien hoy. Puede ser chico: un consejo, un favor, compañía.',type:'task',checks:['Identificá algo que necesitás','Pedilo','Aceptá la respuesta con gracia, sea cual sea']},
+      night:{icon:'🌙',label:'Noche',title:'La fuerza de pedir',desc:'',type:'reflect',prompt:'¿Cómo estuvo pedir? ¿Cambió algo en cómo te ves?'}},
+      {morning:{icon:'🌅',label:'Mañana',title:'La soledad',desc:'¿Cómo te llevás con estar sola? ¿La buscás o la evitás?',type:'reflect',prompt:'Describí tu relación con la soledad. ¿Te pesa? ¿Te recarga?'},
+      noon:{icon:'☀️',label:'Mediodía',title:'30 minutos solo para vos',desc:'Hoy tomá 30 minutos de soledad intencional. Sin teléfono, sin ruido de fondo.',type:'task',checks:['Buscá un momento tranquilo','30 minutos sin pantallas','Notá qué pensamientos aparecen']},
+      night:{icon:'🌙',label:'Noche',title:'El reencuentro con una misma',desc:'',type:'reflect',prompt:'¿Qué apareció en esos 30 minutos? ¿Fue incómodo, tranquilizador, o ambos?'}},
+      {morning:{icon:'🌅',label:'Mañana',title:'Gratitud por tus vínculos',desc:'Terminamos la semana reconociendo lo que sí tenés.',type:'reflect',prompt:'Nombrá 3 personas que, de alguna forma, te ayudaron a ser quien sos hoy.'},
+      noon:{icon:'☀️',label:'Mediodía',title:'Decílo o escribilo',desc:'A una de esas 3 personas, decile o escribile algo de gratitud hoy.',type:'task',checks:['Elegí a una de las 3','Escribile o decile qué significa para vos','Mandalo o decilo hoy mismo']},
+      night:{icon:'🌙',label:'Noche',title:'Semana 2 completa',desc:'',type:'reflect',prompt:'¿Qué cambió en cómo ves tus relaciones esta semana?'}}
+    ]
+  },
+  {
+    id:3, emoji:'🎯', color:'var(--gold)', bgColor:'rgba(212,168,67,0.12)',
+    name:'Metas', fullName:'Metas: Lo que realmente quiero',
+    sub:'Conectar con lo que querés de verdad y dar pasos reales hacia eso',
+    desc:'Esta semana clarificás qué querés, por qué lo querés, y cómo empezar a construirlo.',
+    affirms:['"Tengo derecho a querer cosas para mí."','"Mis sueños no son demasiado grandes."','"Un pequeño paso hoy vale más que un plan perfecto."','"Merezco construir la vida que quiero."','"Claridad es el primer paso de la acción."','"No necesito saberlo todo para empezar."','"Estoy construyendo mi vida, un día a la vez."'],
+    days:[
+      {morning:{icon:'🌅',label:'Mañana',title:'¿Qué quiero realmente?',desc:'Sin filtros ni "pero es imposible". ¿Qué querías ser o hacer cuando eras chica?',type:'reflect',prompt:'Escribí sin censurarte. ¿Qué querrías si supieras que podés lograrlo?'},
+      noon:{icon:'☀️',label:'Mediodía',title:'El método SMART simplificado',desc:'Tomá uno de esos sueños y hacelo concreto: ¿qué, cuándo, cómo medís que lo lograste?',type:'task',checks:['Elegí 1 sueño de tu lista','Poné una fecha: ¿cuándo querés lograrlo?','¿Cuál es el primer paso más chico posible?']},
+      night:{icon:'🌙',label:'Noche',title:'Tu meta del mes',desc:'',type:'reflect',prompt:'¿Cuál es la meta que elegiste? ¿Cómo te hace sentir escribirla?'}},
+      {morning:{icon:'🌅',label:'Mañana',title:'Lo que te frena',desc:'¿Qué cosas (miedos, creencias, excusas) te impiden ir hacia esa meta?',type:'reflect',prompt:'Escribí todos los "pero" que aparecen cuando pensás en tu meta.'},
+      noon:{icon:'☀️',label:'Mediodía',title:'Desafiar cada "pero"',desc:'Para cada obstáculo que anotaste, escribí una forma de superarlo o rodearlo.',type:'task',checks:['Releé tus "peros"','Escribí 1 solución para cada uno','¿Alguno desapareció al examinarlo de cerca?']},
+      night:{icon:'🌙',label:'Noche',title:'Los obstáculos son parte del camino',desc:'',type:'reflect',prompt:'¿Cambió algo en cómo ves esos obstáculos?'}},
+      {morning:{icon:'🌅',label:'Mañana',title:'Tu "por qué"',desc:'¿Por qué es importante esa meta para vos? No para otros — para vos.',type:'reflect',prompt:'Escribí tu "por qué" profundo. ¿Qué cambia en tu vida si lo lográs?'},
+      noon:{icon:'☀️',label:'Mediodía',title:'Un paso hoy',desc:'Sin excusas ni esperar el momento perfecto: dá un paso pequeño hacia tu meta HOY.',type:'task',checks:['Mirá tu meta','Dá UN paso en los próximos 30 minutos','No tiene que ser grande']},
+      night:{icon:'🌙',label:'Noche',title:'La acción rompe el estancamiento',desc:'',type:'reflect',prompt:'¿Cómo te sentiste después de ese pequeño paso?'}},
+      {morning:{icon:'🌅',label:'Mañana',title:'Imaginate lográndolo',desc:'Visualización: cerrá los ojos e imaginá que ya lograste tu meta. ¿Cómo se siente?',type:'reflect',prompt:'Describí ese momento. ¿Cómo estás? ¿Qué te dijo eso?'},
+      noon:{icon:'☀️',label:'Mediodía',title:'Tu plan semanal',desc:'Dividí tu meta en 4 semanas. ¿Qué necesita pasar cada semana para llegar?',type:'task',checks:['Semana 1: ¿qué hacés?','Semana 2: ¿qué hacés?','Semana 3-4: ¿qué hacés?']},
+      night:{icon:'🌙',label:'Noche',title:'El plan te da poder',desc:'',type:'reflect',prompt:'¿Cómo te sentís al ver tu meta con un plan concreto?'}},
+      {morning:{icon:'🌅',label:'Mañana',title:'Tu entorno apoya tu meta',desc:'¿Tu entorno actual te ayuda o te dificulta llegar a tu meta?',type:'reflect',prompt:'¿Qué cambiarías en tu entorno (rutina, espacio, personas) para que apoye mejor tu meta?'},
+      noon:{icon:'☀️',label:'Mediodía',title:'Un cambio de entorno',desc:'Hacé un pequeño cambio en tu entorno físico o rutina que apoye tu meta.',type:'task',checks:['Identificá 1 cambio concreto','Hacelo hoy','Notá si cambia algo en cómo te sentís']},
+      night:{icon:'🌙',label:'Noche',title:'El entorno moldea los hábitos',desc:'',type:'reflect',prompt:'¿Qué cambio hiciste? ¿Cómo se sintió?'}},
+      {morning:{icon:'🌅',label:'Mañana',title:'Cuando no tengas ganas',desc:'Habrá días sin motivación. ¿Cómo querés actuar en esos días?',type:'reflect',prompt:'Escribile un mensaje a tu yo del futuro para los días difíciles. ¿Qué necesitás escuchar?'},
+      noon:{icon:'☀️',label:'Mediodía',title:'Tu sistema de apoyo',desc:'Identificá a alguien que pueda acompañarte en este camino y contale tu meta.',type:'task',checks:['Elegí a esa persona','Contale tu meta','Pedile que te pregunte cómo vas en 2 semanas']},
+      night:{icon:'🌙',label:'Noche',title:'No estás sola en esto',desc:'',type:'reflect',prompt:'¿Cómo se sintió decirlo en voz alta? ¿Cambió algo hacerlo real?'}},
+      {morning:{icon:'🌅',label:'Mañana',title:'Semana 3 completa',desc:'Mirá atrás a los últimos 21 días. ¿Quién eras al empezar y quién sos ahora?',type:'reflect',prompt:'Escribí 3 cambios concretos que notaste en vos misma desde que empezaste.'},
+      noon:{icon:'☀️',label:'Mediodía',title:'Celebración real',desc:'Hacer 21 días seguidos de trabajo en vos misma es un logro extraordinario.',type:'task',checks:['Relee tus reflexiones favoritas','Date un regalo que hayas querido — lo merecés','Prometete continuar']},
+      night:{icon:'🌙',label:'Noche',title:'El camino continúa',desc:'',type:'reflect',prompt:'¿Qué es lo más valioso que te llevás de estas 3 semanas?'}}
+    ]
+  },
+  {
+    id:4, emoji:'💪', color:'var(--rose)', bgColor:'rgba(232,132,122,0.12)',
+    name:'Hábitos', fullName:'Hábitos: Lo que hago cada día',
+    sub:'Construir rutinas pequeñas que generen cambios grandes',
+    desc:'Los hábitos son el lenguaje de la identidad. Esta semana, elegís quién querés ser a través de lo que hacés.',
+    affirms:['"Soy alguien que cuida de sí misma."','"Los hábitos pequeños crean vidas grandes."','"No necesito motivación — necesito consistencia."','"Cada vez que lo hago, me estoy eligiendo."','"Mi rutina me protege y me sostiene."','"Soy más disciplinada de lo que creo."','"Cada día que lo hago soy más yo."'],
+    days: Array.from({length:7},(_,i)=>({
+      morning:{icon:'🌅',label:'Mañana',title:['El hábito que quiero','Mi rutina matutina','El hábito que quiero abandonar','Vincular hábitos','El entorno y los hábitos','Cuando fallo','Mi identidad de hábitos'][i],desc:['¿Cuál es el hábito que más impacto tendría en tu vida ahora mismo?','Una buena mañana puede cambiar el día entero. ¿Cómo es la tuya ahora?','¿Qué hábito querés dejar? ¿Por qué seguís haciéndolo?','Los hábitos se instalan mejor cuando los unís a algo que ya hacés.','Tu entorno hace tus hábitos por vos — o contra vos.','Fallar una vez no rompe un hábito. Fallar dos veces seguidas, sí.','Lo que hacés cada día define quién sos.'][i],type:'reflect',prompt:['¿Cuál es ese hábito? ¿Qué cambiaría si lo tuvieras?','Describí tu mañana típica. ¿Qué te gusta? ¿Qué cambiarías?','¿Por qué creés que seguís repitiendo ese hábito que no querés?','¿A qué hábito existente podrías "pegar" el nuevo? Por ejemplo: después de...','¿Qué cambio en tu entorno haría más fácil tu nuevo hábito?','¿Qué hacés cuando fallás un día? ¿Te castigás o seguís adelante?','Si tu yo futura ya tiene ese hábito, ¿cómo actúa? ¿Qué pienso de ella?'][i]},
+      noon:{icon:'☀️',label:'Mediodía',title:['Hacelo hoy, mínimo posible','Diseñá tu mañana ideal','Una semana sin ese hábito','Encadenalo hoy','Rediseñá tu entorno','Volvé hoy','Define tu identidad'][i],desc:['El hábito más sostenible empieza tan pequeño que da vergüenza admitirlo.','Una mañana intencional cambia el tono del día entero.','Empezá con 24 horas. Solo hoy.','Hoy, hacé el nuevo hábito inmediatamente después de algo que ya hacés.','Hoy hacés un cambio físico en tu espacio para apoyar tu hábito.','Si ayer fallaste, hoy volvés. Sin dramas.','Hacé el hábito hoy y después decite: "Soy alguien que...".'][i],type:'task',checks:[['Identificá la versión mínima de tu hábito (2 minutos)','Hacela HOY','Notá cómo te sentís después'],['Escribí 3 cosas que harías en tu mañana ideal','Elegí UNA e implementala mañana','Pon alarma para practicarla'],['Di que no al hábito que querés dejar solo por hoy','Si el impulso aparece, esperá 10 minutos','Notá qué sentís'],['Identificá tu hábito ancla (el que ya hacés)','Inmediatamente después, hacé el hábito nuevo','Repetí mañana'],['Mové, agregá o sacá algo de tu espacio','¿Qué hace más visible tu nuevo hábito?','¿Qué hace invisible el hábito que querés dejar?'],['Hacé el hábito que faltaste, aunque sea 2 minutos','No te castigues — seguir es el logro','Anota: "Volví"'],['Hacé tu hábito hoy','Escribí: "Soy alguien que..."','Leelo en voz alta']][i]},
+      night:{icon:'🌙',label:'Noche',title:'Reflexión del día',desc:'',type:'reflect',prompt:['¿Lo hiciste? ¿Cómo se sintió?','¿Cómo estuvo diseñar tu mañana?','¿Cómo estuvo el día sin ese hábito?','¿Pudiste encadenarlo? ¿Cómo salió?','¿Cambió algo en tu entorno? ¿Lo notaste?','¿Cómo estuvo volver? ¿Fue más fácil o más difícil de lo que pensabas?','¿Cómo te sentís definiéndote por lo que hacés?'][i]}
+    }))
+  },
+  {
+    id:5, emoji:'🌱', color:'var(--green)', bgColor:'rgba(107,158,120,0.12)',
+    name:'Cuerpo', fullName:'Cuerpo: Escucharme y cuidarme',
+    sub:'Reconectar con tu cuerpo como hogar, no como enemigo',
+    desc:'Esta semana, el cuerpo no es algo que tenés que cambiar. Es algo que aprendés a escuchar.',
+    affirms:['"Mi cuerpo merece cuidado, no castigo."','"Escucho lo que mi cuerpo necesita."','"El movimiento es un regalo, no una obligación."','"Como para nutrirme, no para compensar."','"Descansar también es productivo."','"Me relaciono con mi cuerpo desde el amor."','"Soy más que mi apariencia."'],
+    days: Array.from({length:7},(_,i)=>({
+      morning:{icon:'🌅',label:'Mañana',title:['¿Cómo estás físicamente?','El movimiento que te da alegría','Tu relación con la comida','El descanso','Tu cuerpo y tus emociones','Lo que te da energía','Gratitud por tu cuerpo'][i],desc:['Un escaneo del cuerpo: ¿dónde sentís tensión, cansancio, vitalidad?','No ejercicio — movimiento. ¿Qué tipo de movimiento disfrutás?','¿Cómo es tu relación con la comida? ¿Comes por hambre o por emociones?','¿Cómo dormís? ¿Cuántas horas? ¿Qué tan reparador es?','¿Dónde sentís las emociones en tu cuerpo?','¿Qué actividades te llenan de energía física?','Tu cuerpo te llevó hasta acá. ¿Qué le agradecés?'][i],type:'reflect',prompt:['Hacé un recorrido mental de tu cuerpo. ¿Dónde hay tensión? ¿Dónde hay bienestar?','¿Qué tipo de movimiento disfrutabas de chica? ¿Lo seguís haciendo?','Describí tu relación con la comida sin juzgarte.','¿Cuánto dormís? ¿Qué pasa en tu mente cuando no podés dormir?','¿Dónde sentís la ansiedad? ¿El miedo? ¿La alegría?','¿Qué te da más energía física en el día?','Escribile una carta de gratitud a tu cuerpo por 3 cosas específicas.'][i]},
+      noon:{icon:'☀️',label:'Mediodía',title:['Movimiento de 10 minutos','Movimiento por alegría','Una comida consciente','Mejorar el descanso de esta noche','Liberar tensión','Agregar energía','El cuidado más básico'][i],desc:['Hoy, 10 minutos de movimiento. Lo que sea: bailar, caminar, estirar.','Hoy movete de una forma que disfrutes, no que "debas" hacer.','Hoy, en una comida, comé sin pantallas y prestá atención.','Prepará tu espacio de descanso con más intención esta noche.','Hoy, dedicá 5 minutos a liberar tensión de donde la sentís más.','Hacé algo que te llene de energía hoy.','Un vaso de agua, dormir 30 min más, 10 min al sol.'][i],type:'task',checks:[['Poné alarma para 10 min de movimiento','Hacelo aunque sea incómodo','Notá cómo te sentís después'],['Elegí una actividad que disfrutes','Hacela durante al menos 15 minutos','¿Cómo estuvo?'],['Una comida hoy sin teléfono','Mastiquá despacio y prestá atención','¿Notaste algo diferente?'],['Ponete en cama 30 min antes de lo usual','Sacá el teléfono del cuarto si podés','Notá qué pasa'],['Identificá dónde tenés más tensión','5 minutos de estiramiento o respiración ahí','¿Cambió algo?'],['Elegí tu actividad de mayor energía','Hacela hoy, aunque sea 20 min','Notá el contraste antes y después'],['Elegí el cuidado más básico que podés hacer hoy','Hacelo con intención','Date las gracias después']][i]},
+      night:{icon:'🌙',label:'Noche',title:'Reflexión del día',desc:'',type:'reflect',prompt:['¿Cómo estuvo el movimiento? ¿Qué notaste?','¿Cómo fue moverse por alegría y no por obligación?','¿Qué notaste al comer con más atención?','¿Cómo estuvo la noche con más intención para el descanso?','¿Cambió algo en tu cuerpo después de liberar tensión?','¿Cómo te sentiste con más energía física hoy?','¿Cómo te sentís con tu cuerpo al terminar esta semana?'][i]}
+    }))
+  },
+  {
+    id:6, emoji:'✨', color:'var(--sky)', bgColor:'rgba(126,181,200,0.12)',
+    name:'Emociones', fullName:'Emociones: Sentir sin ahogarse',
+    sub:'Aprender a estar con tus emociones en lugar de huir de ellas',
+    desc:'Las emociones no son el problema. El problema es creer que no podemos con ellas. Esta semana, aprendemos.',
+    affirms:['"Mis emociones tienen valor y significado."','"Puedo sentir sin ser arrastrada."','"No necesito resolver todo para estar bien."','"Soy más que mis emociones del momento."','"Tengo herramientas para atravesar las tormentas."','"La tristeza y la alegría pueden convivir."','"Me permito sentir. Y me permito soltar."'],
+    days: Array.from({length:7},(_,i)=>({
+      morning:{icon:'🌅',label:'Mañana',title:['¿Cómo estás emocionalmente?','La emoción que evitás','La ira','La tristeza','La ansiedad','La alegría','Integrar todo'][i],desc:['Un check-in honesto: ¿cómo estás hoy, de verdad?','¿Qué emoción preferís no sentir? ¿Qué hacés para evitarla?','¿Cómo te relacionás con la bronca o la ira?','¿Cuándo fue la última vez que lloraste o sentiste tristeza profunda?','La ansiedad avisa de algo. ¿De qué avisa la tuya?','¿Cuándo fue la última vez que sentiste alegría genuina?','Las emociones difíciles y las lindas conviven. ¿Cómo es eso para vos?'][i],type:'reflect',prompt:['En una escala del 1 al 10, ¿cómo estás? ¿Qué te pesa? ¿Qué te alegra?','¿Cuál es esa emoción que evitás? ¿Qué creés que pasaría si la sintieras de verdad?','¿Cómo mostrás la ira? ¿La guardás, explotas, o algo intermedio?','¿Te permitís sentir tristeza? ¿O la empujás para abajo?','¿De qué te está avisando tu ansiedad últimamente?','Describí la última vez que sentiste alegría genuina. ¿Qué estabas haciendo?','¿Cómo es para vos tener emociones contradictorias al mismo tiempo?'][i]},
+      noon:{icon:'☀️',label:'Mediodía',title:['El diario emocional','Sentarla','Decirle algo a la ira','El espacio para la tristeza','Tranquilizar la ansiedad','Crear alegría','Tu caja de herramientas'][i],desc:['Hoy empezás a anotar tus emociones, solo para registrarlas.','Hoy elegís sentir esa emoción incómoda por 5 minutos, sin huir.','Hoy le das un canal a la ira: físico, creativo o expresivo.','Hoy te dás permiso de sentir tristeza sin intentar arreglarla.','Hoy usás una técnica concreta para manejar la ansiedad.','Hoy hacés algo intencionalmente para crear alegría.','Hacé una lista de qué te ayuda a manejar cada emoción difícil.'][i],type:'task',checks:[[   'Anotá las emociones que sentiste hoy','Poné el nombre exacto de cada una (no solo "bien" o "mal")','¿Notas algún patrón?'],['Pon alarma de 5 minutos','Sentate con esa emoción: ¿dónde la sentís en el cuerpo?','¿Qué tiene para decirte?'],['Elegí: ejercicio, gritar en una almohada, dibujar lo que sentís, escribir','Hacé eso con la ira hoy','¿Cómo estuvo?'],['Date permiso de sentirte triste si es lo que hay','No intentes arreglarlo ni distraerte','Solo existí con eso un rato'],['Respiración 4-7-8: inspirá 4, sostené 7, soltá 8','Hacela 3 veces cuando sientas ansiedad','Anotá si cambió algo'],['Elegí algo pequeño que te genera alegría','Hacelo HOY, no "cuando tengas tiempo"','¿Cómo estuvo?'],['Tristeza: ___','Ansiedad: ___','Ira: ___']][i]},
+      night:{icon:'🌙',label:'Noche',title:'Reflexión del día',desc:'',type:'reflect',prompt:['¿Qué emociones registraste hoy?','¿Cómo estuvo estar con esa emoción incómoda?','¿Cómo estuvo darle canal a la ira?','¿Cómo estuvo darte permiso de sentir tristeza?','¿Cambió algo la técnica de respiración?','¿Cómo estuvo crear alegría intencionalmente?','¿Qué te llevás de esta semana?'][i]}
+    }))
+  },
+  {
+    id:7, emoji:'🌺', color:'var(--green)', bgColor:'rgba(107,158,120,0.12)',
+    name:'Futuro', fullName:'Futuro: Quién quiero ser',
+    sub:'Integrar todo el camino y diseñar quién querés ser de ahora en más',
+    desc:'Llegaste a la última semana. No porque hayas terminado — sino porque estás lista para seguir sola.',
+    affirms:['"Soy la autora de mi historia."','"Mi futuro está en construcción — y yo lo construyo."','"Puedo ser quien quiero ser."','"Mi pasado no dicta mi futuro."','"Tengo todo lo que necesito para empezar."','"Estoy lista."','"Florece — eso es lo que hacés."'],
+    days: Array.from({length:7},(_,i)=>({
+      morning:{icon:'🌅',label:'Mañana',title:['El hilo del camino','Tu carta al futuro','Lo que dejás atrás','Quién sos hoy','Tu versión futura','Lo que llevás','Bienvenida a vos misma'][i],desc:['Mirá atrás a las 6 semanas pasadas. ¿Qué cambió?','Escribile a la versión de vos misma de dentro de 1 año.','¿Qué creencias, hábitos o vínculos dejás atrás?','¿Quién sos hoy, después de este camino?','Visualizá a tu yo de dentro de 1 año. ¿Cómo es su vida?','¿Qué herramientas y aprendizajes llevás con vos?','Hoy es el último día. ¿Cómo querés recibirte?'][i],type:'reflect',prompt:['¿Qué es lo más grande que cambió en vos en estas 6 semanas?','Querida yo del futuro: ¿Qué querés que sepa? ¿Qué le prometés?','¿Qué dejás ir conscientemente al terminar este camino?','Describite a vos misma hoy, honestamente. ¿Quién sos?','Describí ese futuro con detalles. ¿Dónde estás? ¿Qué hacés? ¿Cómo te sentís?','¿Cuáles son los 3 aprendizajes más importantes que llevás?','¿Qué te decís a vos misma en este día final?'][i]},
+      noon:{icon:'☀️',label:'Mediodía',title:['Relectura','Mandala de metas','El ritual de cierre','Tu manifiesto','Una promesa','Compartir','Celebrarte'][i],desc:['Volvé a tus primeras reflexiones. ¿Qué ves ahora que no veías antes?','Dibujá o escribí visualmente tus metas para el próximo año.','Creá un pequeño ritual que marque el fin de este camino.','Escribí 5-10 líneas sobre quién sos y hacia dónde vas.','Hacete una promesa concreta para los próximos 30 días.','Compartí este logro con alguien que te importe.','Hoy te celebrás. En serio.'][i],type:'task',checks:[[   'Buscá tus reflexiones del Día 1','Compará quién eras y quién sos','Escribí qué te sorprende'],['Papel, lapicera o digital — lo que quieras','Anotá tus metas para los próximos 12 meses','Colgalo donde lo puedas ver'],['Elegí algo simbólico para marcar el fin','Puede ser quemar algo, guardarlo, regalarlo','Hacelo con intención'],['Escribí tu manifiesto personal','Empezá con: "Soy alguien que..."','Guardalo en un lugar especial'],['Elegí 1 cosa concreta que harás en los próximos 30 días','Escribila como compromiso','Firma o pon fecha'],['Contale a alguien que terminaste este camino','No necesita ser todo — solo que lo sabés','Recibí su respuesta'],['Elegí cómo celebrarte hoy','Puede ser pequeño o grande','Lo que importa es que lo hagas']][i]},
+      night:{icon:'🌙',label:'Noche',title:'Reflexión del día',desc:'',type:'reflect',prompt:['¿Qué notaste al releer el principio?','¿Qué pusiste en tu mandala?','¿Cómo estuvo tu ritual de cierre?','¿Cómo te sentís con tu manifiesto?','¿Qué promesa te hiciste?','¿Cómo fue compartirlo?','¿Cómo te sentís esta noche al terminar las 7 semanas?'][i]}
+    }))
+  }
+];
+
+var NOTIF_MESSAGES = [
+  {title:'Buenos días, {name} 🌸',msg:'Tu tarea matutina de hoy te espera. Solo 5 minutos para empezar bien el día.',time:'8:00 AM'},
+  {title:'Tu reto del mediodía ☀️',msg:'Tomá un momento para vos. Tu tarea está lista.',time:'12:30 PM'},
+  {title:'Es hora de reflexionar 🌙',msg:'Antes de dormir, 3 minutos para cerrar el día con intención.',time:'8:00 PM'},
+  {title:'¡No te olvidés! 🌸',msg:'Llevas 2 días sin completar una tarea. {name}, vos podés.',time:'6:00 PM'},
+  {title:'Racha de {streak} días 🔥',msg:'¡Seguís! Cada día cuenta más de lo que creés.',time:'9:00 AM'}
+];
+
+// ── STATE ────────────────────────────────────────────────────
+var STATE = {
+  name: '', feeling: '',
+  currentMod: 0, currentDay: 0,
+  completedTasks: {}, // "mod-day-time": true
+  streak: 0, totalDone: 0,
+  startDate: null
+};
+
+var setupFeeling = '';
+
+// ── SETUP ────────────────────────────────────────────────────
+function setupPetals() {
+  var container = document.getElementById('petals-container');
+  var colors = ['#E8847A','#F2A98A','#D4A843','#9B8EC4','#7EB5C8','#6B9E78'];
+  for (var i = 0; i < 12; i++) {
+    var p = document.createElement('div');
+    p.className = 'petal';
+    var size = (8 + Math.random() * 16) + 'px';
+    p.style.cssText = [
+      'width:'+size,'height:'+size,
+      'background:'+colors[Math.floor(Math.random()*colors.length)],
+      'left:'+(Math.random()*100)+'%',
+      'animation-duration:'+(6+Math.random()*8)+'s',
+      'animation-delay:'+(-Math.random()*8)+'s'
+    ].join(';');
+    container.appendChild(p);
+  }
+}
+setupPetals();
+
+var nameInp = document.getElementById('name-inp');
+nameInp.addEventListener('input', function() {
+  document.getElementById('ss1-btn').disabled = this.value.trim().length < 2;
+});
+
+function selectFeeling(val, el) {
+  setupFeeling = val;
+  document.querySelectorAll('#feeling-opts .setup-opt').forEach(function(o) {
+    o.classList.remove('sel');
+    o.querySelector('.setup-opt-ck').textContent = '';
+  });
+  el.classList.add('sel');
+  el.querySelector('.setup-opt-ck').textContent = '✓';
+  document.getElementById('ss2-btn').disabled = false;
+}
+
+function selectTime(i, el) {
+  el.classList.toggle('sel');
+  el.querySelector('.setup-opt-ck').textContent = el.classList.contains('sel') ? '✓' : '';
+}
+
+function setupNext(step) {
+  if (step === 2) {
+    STATE.name = document.getElementById('name-inp').value.trim();
+  }
+  document.getElementById('ss'+(step-1)).classList.remove('on');
+  document.getElementById('ss'+step).classList.add('on');
+  for (var i = 1; i <= 3; i++) {
+    document.getElementById('sd'+i).className = 's-dot ' + (i <= step ? 'on' : '');
+  }
+}
+
+function finishSetup() {
+  STATE.feeling = setupFeeling;
+  STATE.startDate = new Date().toISOString();
+  STATE.streak = 1;
+  document.getElementById('screen-setup').classList.remove('active');
+  document.getElementById('screen-home').classList.add('active');
+  renderHome();
+  setTimeout(function() { showNotifDemo(); }, 2000);
+}
+
+// ── HOME ────────────────────────────────────────────────────
+function renderHome() {
+  var h = new Date().getHours();
+  var timeLabel = h < 12 ? 'Buenos días' : h < 18 ? 'Buenas tardes' : 'Buenas noches';
+  document.getElementById('time-tag').textContent = timeLabel;
+  document.getElementById('home-username').textContent = STATE.name || 'tú';
+  document.getElementById('week-badge').textContent = 'Semana ' + (STATE.currentMod + 1);
+
+  var pendingToday = 3 - getTodayCompletedCount();
+  var taglines = pendingToday > 0
+    ? 'Tenés ' + pendingToday + ' tarea'+(pendingToday>1?'s':'')+' esperándote 🌱'
+    : '¡Completaste todo el día de hoy! 🎉';
+  document.getElementById('home-tagline').textContent = taglines;
+
+  // Progress ring
+  var totalTasks = MODULES.length * 7 * 3;
+  var pct = Math.round((STATE.totalDone / totalTasks) * 100);
+  var offset = 188.5 - (188.5 * pct / 100);
+  document.getElementById('ring-fill').style.strokeDashoffset = offset;
+  document.getElementById('ring-pct').textContent = pct + '%';
+
+  var mod = MODULES[STATE.currentMod];
+  document.getElementById('prog-title').textContent = 'Módulo ' + mod.id + ': ' + mod.name;
+  document.getElementById('prog-sub').textContent = 'Día ' + (STATE.currentDay + 1) + ' de 7 · ' + getTodayCompletedCount() + ' de 3 tareas hoy';
+
+  // Week dots
+  var weeksEl = document.getElementById('prog-weeks');
+  weeksEl.innerHTML = '';
+  for (var i = 0; i < 7; i++) {
+    var dot = document.createElement('div');
+    dot.className = 'prog-week ' + (i < STATE.currentMod ? 'done' : i === STATE.currentMod ? 'active' : '');
+    weeksEl.appendChild(dot);
+  }
+
+  // Affirmation
+  var aff = mod.affirms[STATE.currentDay % mod.affirms.length];
+  document.getElementById('affirm-text').textContent = aff;
+
+  // Stats
+  document.getElementById('stat-streak').textContent = STATE.streak;
+  document.getElementById('stat-done').textContent = STATE.totalDone;
+  document.getElementById('stat-week').textContent = STATE.currentMod + 1;
+
+  renderTodayTasks();
+  renderModMap();
+}
+
+function getTodayCompletedCount() {
+  var count = 0;
+  ['morning','noon','night'].forEach(function(t) {
+    if (STATE.completedTasks[taskKey(STATE.currentMod, STATE.currentDay, t)]) count++;
+  });
+  return count;
+}
+
+function taskKey(mod, day, time) {
+  return mod + '-' + day + '-' + time;
+}
+
+function renderTodayTasks() {
+  var grid = document.getElementById('tasks-grid');
+  grid.innerHTML = '';
+  var mod = MODULES[STATE.currentMod];
+  var day = mod.days[STATE.currentDay];
+  var times = ['morning','noon','night'];
+  var h = new Date().getHours();
+  var timeColors = {
+    morning: {bg:'rgba(242,169,138,0.12)', color:'var(--peach)', label:'Mañana'},
+    noon: {bg:'rgba(212,168,67,0.12)', color:'var(--gold)', label:'Mediodía'},
+    night: {bg:'rgba(155,142,196,0.12)', color:'var(--lavender)', label:'Noche'}
+  };
+
+  times.forEach(function(t) {
+    var task = day[t];
+    var key = taskKey(STATE.currentMod, STATE.currentDay, t);
+    var done = STATE.completedTasks[key];
+    var locked = (t==='noon' && h<11) || (t==='night' && h<17);
+    var tc = timeColors[t];
+
+    var card = document.createElement('div');
+    card.className = 'task-card' + (done ? ' completed' : '') + (locked ? ' locked' : '');
+    if (!locked && !done) card.onclick = function() { openTaskModal(STATE.currentMod, STATE.currentDay, t); };
+
+    card.innerHTML = '<div class="task-time-icon" style="background:'+tc.bg+'">'+task.icon+'</div>'
+      + '<div class="task-body">'
+      + '<div class="task-time-label" style="color:'+tc.color+'">'+tc.label+'</div>'
+      + '<div class="task-title">'+task.title+'</div>'
+      + '<div class="task-desc">'+task.desc+'</div>'
+      + '</div>'
+      + '<div class="task-status">'+(done?'✓':locked?'🔒':'')+'</div>';
+
+    grid.appendChild(card);
+  });
+}
+
+function renderModMap() {
+  var map = document.getElementById('mod-map');
+  map.innerHTML = '';
+  MODULES.forEach(function(mod, idx) {
+    var done = idx < STATE.currentMod;
+    var active = idx === STATE.currentMod;
+    var locked = idx > STATE.currentMod;
+
+    var item = document.createElement('div');
+    item.className = 'mod-item' + (active?' active-mod':'') + (done?' done':'') + (locked?' locked':'');
+    if (!locked) item.onclick = function() { showScreen('module',null); renderModuleView(idx); };
+
+    // Day dots
+    var dotsHtml = '<div class="mod-days-row">';
+    for (var d = 0; d < 7; d++) {
+      var allDone = ['morning','noon','night'].every(function(t){ return STATE.completedTasks[taskKey(idx,d,t)]; });
+      var isToday = idx===STATE.currentMod && d===STATE.currentDay;
+      dotsHtml += '<div class="mod-day-dot'+(allDone?' done':isToday?' today':'')+'"></div>';
+    }
+    dotsHtml += '</div>';
+
+    var numStyle = 'background:' + mod.bgColor + ';color:' + mod.color;
+    var statusText = done ? '<span style="color:var(--green)">Completado ✓</span>'
+      : active ? '<span style="color:var(--rose)">En progreso · Día '+(STATE.currentDay+1)+'/7</span>'
+      : 'Próximamente';
+
+    item.innerHTML = '<div class="mod-num" style="'+numStyle+'">'+mod.emoji+'</div>'
+      + '<div class="mod-content"><div class="mod-name">'+mod.fullName+'</div>'
+      + '<div class="mod-status-row">'+statusText+'</div>'
+      + dotsHtml+'</div>'
+      + '<div class="mod-arrow">'+(locked?'🔒': done?'✅':'→')+'</div>';
+    map.appendChild(item);
+  });
+}
+
+// ── TASK MODAL / COMPLETION ────────────────────────────────
+function openTaskModal(modIdx, dayIdx, timeKey) {
+  showScreen('module', null);
+  renderModuleView(modIdx);
+  // scroll to that day's task
+  setTimeout(function() {
+    var el = document.getElementById('dtc-'+modIdx+'-'+dayIdx+'-'+timeKey);
+    if (el) el.scrollIntoView({behavior:'smooth', block:'center'});
+  }, 200);
+}
+
+// ── MODULE VIEW ──────────────────────────────────────────────
+function renderModuleView(modIdx) {
+  var mod = MODULES[modIdx];
+  var isActive = modIdx === STATE.currentMod;
+  var isDone = modIdx < STATE.currentMod;
+
+  document.getElementById('mh-tag').textContent = 'SEMANA ' + mod.id + ' · 7 DÍAS';
+  document.getElementById('mh-title').textContent = mod.fullName;
+  document.getElementById('mh-sub').textContent = mod.sub;
+
+  // Header color
+  var colors = ['#3D2B1F','#4A2E20'];
+  document.getElementById('mod-header').style.background = 'linear-gradient(160deg,' + colors[0] + ',' + colors[1] + ')';
+
+  // Progress dots
+  var progEl = document.getElementById('mh-progress');
+  progEl.innerHTML = '';
+  for (var d = 0; d < 7; d++) {
+    var allDone = ['morning','noon','night'].every(function(t){ return STATE.completedTasks[taskKey(modIdx,d,t)]; });
+    var isToday = isActive && d === STATE.currentDay;
+    var dot = document.createElement('div');
+    dot.className = 'mod-p-dot' + (allDone?' done': isToday?' active':'');
+    progEl.appendChild(dot);
+  }
+
+  // Days
+  var container = document.getElementById('day-cards');
+  container.innerHTML = '';
+  var today = isActive ? STATE.currentDay : (isDone ? 6 : -1);
+
+  mod.days.forEach(function(day, dIdx) {
+    var dayLabel = document.createElement('div');
+    dayLabel.className = 'day-section';
+    dayLabel.textContent = 'Día ' + (dIdx+1) + (isActive && dIdx===STATE.currentDay ? ' — Hoy' : '');
+    container.appendChild(dayLabel);
+
+    ['morning','noon','night'].forEach(function(t) {
+      var task = day[t];
+      var key = taskKey(modIdx, dIdx, t);
+      var done = STATE.completedTasks[key];
+      var locked = modIdx > STATE.currentMod || (isActive && dIdx > STATE.currentDay);
+      var tc = {morning:{bg:'rgba(242,169,138,0.1)',color:'var(--peach)'},noon:{bg:'rgba(212,168,67,0.1)',color:'var(--gold)'},night:{bg:'rgba(155,142,196,0.1)',color:'var(--lavender)'}}[t];
+
+      var card = document.createElement('div');
+      card.className = 'day-task-card' + (done?' done':'') + (locked?' locked':'');
+      card.id = 'dtc-'+modIdx+'-'+dIdx+'-'+t;
+
+      var content = '<div class="dtc-top">'
+        + '<div class="dtc-icon" style="background:'+tc.bg+'">'+task.icon+'</div>'
+        + '<div class="dtc-info">'
+        + '<div class="dtc-label" style="color:'+tc.color+'">'+task.label+'</div>'
+        + '<div class="dtc-title">'+task.title+'</div>'
+        + '</div>'
+        + '<div class="dtc-check">'+(done?'✓':'')+'</div>'
+        + '</div>'
+        + '<div class="dtc-desc">'+task.desc+'</div>';
+
+      if (!locked && !done) {
+        if (task.type === 'reflect') {
+          content += '<div class="dtc-reflection" id="ref-'+key+'">'
+            + '<div style="font-size:.75rem;color:var(--muted);margin-bottom:6px;font-weight:300">'+task.prompt+'</div>'
+            + '<textarea class="dtc-textarea" id="ta-'+key+'" placeholder="Escribí aquí..."></textarea>'
+            + '<button class="dtc-confirm" onclick="completeTask(\''+modIdx+'\',\''+dIdx+'\',\''+t+'\')">Guardar reflexión ✓</button>'
+            + '</div>';
+        } else {
+          var checksHtml = '<div class="dtc-reflection" id="ref-'+key+'">'
+            + '<div style="font-size:.75rem;color:var(--muted);margin-bottom:10px;font-weight:300">Marcá cada paso:</div>';
+          task.checks.forEach(function(ch, ci) {
+            checksHtml += '<div class="tchk-item" id="ch-'+key+'-'+ci+'" onclick="togTaskCheck(\''+key+'\','+ci+','+task.checks.length+')" style="display:flex;gap:10px;align-items:flex-start;padding:10px;background:var(--warm);border-radius:10px;margin-bottom:7px;cursor:pointer;border:1.5px solid rgba(61,43,31,0.06);transition:all .2s">'
+              + '<div id="chbox-'+key+'-'+ci+'" style="width:22px;height:22px;border-radius:6px;border:1.5px solid rgba(61,43,31,0.15);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:.75rem;transition:all .2s"></div>'
+              + '<div style="font-size:.79rem;font-weight:500;color:var(--bark);line-height:1.45">'+ch+'</div></div>';
+          });
+          checksHtml += '<button class="dtc-confirm" id="task-confirm-'+key+'" disabled onclick="completeTask(\''+modIdx+'\',\''+dIdx+'\',\''+t+'\')">Completar tarea ✓</button></div>';
+          content += checksHtml;
+        }
+
+        card.onclick = function() {
+          var ref = document.getElementById('ref-'+key);
+          if (ref) {
+            var isOpen = card.classList.contains('open');
+            card.classList.toggle('open');
+            ref.style.display = isOpen ? 'none' : 'block';
+          }
+        };
+      }
+
+      card.innerHTML = content;
+      container.appendChild(card);
+    });
+  });
+}
+
+var taskChecks = {};
+function togTaskCheck(key, idx, total) {
+  if (!taskChecks[key]) taskChecks[key] = {};
+  taskChecks[key][idx] = !taskChecks[key][idx];
+  var box = document.getElementById('chbox-'+key+'-'+idx);
+  var item = document.getElementById('ch-'+key+'-'+idx);
+  if (taskChecks[key][idx]) {
+    box.textContent = '✓';
+    box.style.background = 'var(--green)';
+    box.style.borderColor = 'var(--green)';
+    box.style.color = 'white';
+    item.style.background = 'rgba(107,158,120,0.06)';
+    item.style.borderColor = 'rgba(107,158,120,0.25)';
+  } else {
+    box.textContent = '';
+    box.style.background = '';
+    box.style.borderColor = '';
+    box.style.color = '';
+    item.style.background = '';
+    item.style.borderColor = '';
+  }
+  var count = Object.values(taskChecks[key]).filter(Boolean).length;
+  var btn = document.getElementById('task-confirm-'+key);
+  if (btn) {
+    btn.disabled = count < 1;
+    btn.textContent = count === total ? 'Completar tarea ✓' : 'Continuar (' + count + '/' + total + ') ✓';
+  }
+}
+
+function completeTask(modIdx, dayIdx, timeKey) {
+  modIdx = parseInt(modIdx); dayIdx = parseInt(dayIdx);
+  var key = taskKey(modIdx, dayIdx, timeKey);
+  STATE.completedTasks[key] = true;
+  STATE.totalDone++;
+
+  // Burst confetti
+  burstConfetti();
+  showToast('✅', '¡Tarea completada! Seguís floreciendo 🌸');
+
+  // Check day completion
+  var allTimesDone = ['morning','noon','night'].every(function(t) {
+    return STATE.completedTasks[taskKey(modIdx, dayIdx, t)];
+  });
+
+  if (allTimesDone) {
+    STATE.streak++;
+    // Check if all 7 days done
+    var allDaysDone = true;
+    for (var d = 0; d < 7; d++) {
+      if (!['morning','noon','night'].every(function(t){ return STATE.completedTasks[taskKey(modIdx,d,t)]; })) {
+        allDaysDone = false; break;
+      }
+    }
+    if (allDaysDone) {
+      setTimeout(function() { showModuleCelebration(modIdx); }, 800);
+    } else if (dayIdx < 6) {
+      STATE.currentDay = dayIdx + 1;
+      setTimeout(function() {
+        showToast('🌸', '¡Día ' + (dayIdx+1) + ' completo! Mañana continúa el día ' + (dayIdx+2));
+      }, 1200);
+    }
+  }
+
+  renderModuleView(modIdx);
+  if (document.getElementById('screen-home').classList.contains('active')) {
+    renderHome();
+  }
+}
+
+function showModuleCelebration(modIdx) {
+  var totalTasks = (modIdx+1) * 7 * 3;
+  document.getElementById('cel-sub').textContent = 'Completaste "' + MODULES[modIdx].fullName + '". Llevás ' + STATE.streak + ' días en racha. Eso es real — y es tuyo.';
+  document.getElementById('cel-weeks').textContent = modIdx + 1;
+  document.getElementById('cel-tasks').textContent = STATE.totalDone;
+  document.getElementById('celebration').classList.add('open');
+  burstConfetti(); burstConfetti(); burstConfetti();
+}
+
+function closeCelebration() {
+  document.getElementById('celebration').classList.remove('open');
+  if (STATE.currentMod < MODULES.length - 1) {
+    STATE.currentMod++;
+    STATE.currentDay = 0;
+    showToast('🌺', '¡Semana ' + STATE.currentMod + ' completada! Comenzás la semana ' + (STATE.currentMod+1));
+  }
+  showScreen('home', document.querySelector('.nb'));
+  renderHome();
+}
+
+// ── NOTIFICATIONS ────────────────────────────────────────────
+var notifTimeout = null;
+function showNotifDemo() {
+  var h = new Date().getHours();
+  var notif = h < 12 ? NOTIF_MESSAGES[0] : h < 17 ? NOTIF_MESSAGES[1] : NOTIF_MESSAGES[2];
+  var title = notif.title.replace('{name}', STATE.name || 'tú').replace('{streak}', STATE.streak);
+  var msg = notif.msg.replace('{name}', STATE.name || 'tú');
+
+  document.getElementById('notif-title').textContent = title;
+  document.getElementById('notif-msg').textContent = msg;
+  document.getElementById('notif-time').textContent = notif.time;
+
+  var card = document.getElementById('notif-card');
+  card.classList.add('show');
+  if (notifTimeout) clearTimeout(notifTimeout);
+  notifTimeout = setTimeout(dismissNotif, 5000);
+}
+
+function dismissNotif() {
+  document.getElementById('notif-card').classList.remove('show');
+}
+
+// ── SCREENS ──────────────────────────────────────────────────
+function showScreen(id, btn) {
+  document.querySelectorAll('.screen').forEach(function(s) { s.classList.remove('active'); });
+  document.getElementById('screen-' + id).classList.add('active');
+  document.querySelectorAll('.nb').forEach(function(b) { b.classList.remove('on'); });
+  if (btn) btn.classList.add('on');
+}
+
+function showStats() {
+  showToast('🌸', 'Racha: '+STATE.streak+' días · '+STATE.totalDone+' tareas completadas · Semana '+(STATE.currentMod+1)+'/7');
+}
+
+// ── EFFECTS ──────────────────────────────────────────────────
+var toastTO = null;
+function showToast(ic, msg) {
+  document.getElementById('toast-ic').textContent = ic;
+  document.getElementById('toast-msg').textContent = msg;
+  var bar = document.getElementById('toast-bar');
+  bar.classList.add('show');
+  if (toastTO) clearTimeout(toastTO);
+  toastTO = setTimeout(function() { bar.classList.remove('show'); }, 3500);
+}
+
+function burstConfetti() {
+  var colors = ['#E8847A','#F2A98A','#D4A843','#9B8EC4','#7EB5C8','#6B9E78','#FDF6EE'];
+  var burst = document.createElement('div');
+  burst.className = 'confetti-burst';
+  burst.style.cssText = 'left:50%;top:50%;';
+  for (var i = 0; i < 18; i++) {
+    var dot = document.createElement('div');
+    dot.className = 'cb-dot';
+    var angle = (i / 18) * 360;
+    var dist = 60 + Math.random() * 80;
+    var tx = Math.cos(angle * Math.PI / 180) * dist;
+    var ty = Math.sin(angle * Math.PI / 180) * dist;
+    var size = (6 + Math.random() * 8) + 'px';
+    dot.style.cssText = 'background:'+colors[i%colors.length]+';width:'+size+';height:'+size+';border-radius:'+(Math.random()>.5?'50%':'3px')+';left:-5px;top:-5px;--tx:'+tx+'px;--ty:'+ty+'px;';
+    burst.appendChild(dot);
+  }
+  document.body.appendChild(burst);
+  setTimeout(function() { burst.remove(); }, 1000);
+}
+</script>
+</body>
+</html>
